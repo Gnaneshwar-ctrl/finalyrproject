@@ -9,7 +9,9 @@ https://docs.lammps.org/fix_indent.html
 
 https://www.afs.enea.it/software/lammps/doc17/html/fix_indent.html
 
+http://utkstair.org/clausius/docs/mse614/pdf/eam_intro_v01.pdf
 
 
-
+--> mpi cmd 
+mpirun -np 4 lmp_mpi -in 
 
