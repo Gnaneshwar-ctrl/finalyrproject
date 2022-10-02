@@ -1,0 +1,24 @@
+LAMMPS (29 Sep 2021 - Update 3)
+# 3d metal relaxaction
+
+# initilizing EAM and boundry conditions
+
+units		metal
+boundary	p p p
+
+# reading data file containing the configuration
+
+read_data Al_alloy.lmpdat
+Reading data file ...
+  orthogonal box = (0.0000000 0.0000000 0.0000000) to (80.920000 80.920000 242.76000)
+  1 by 1 by 4 MPI processor grid
+  reading atoms ...
+  96000 atoms
+  read_data CPU = 0.050 seconds
+
+# defining potentials and other parameters
+
+pair_style	eam
+pair_coeff	* * AL.eam
+ERROR on proc 0: Not a valid integer number: '0.4050000000E+01' (../pair_eam.cpp:509)
+Last command: pair_coeff	* * AL.eam
