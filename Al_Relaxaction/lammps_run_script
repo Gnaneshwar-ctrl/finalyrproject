@@ -11,8 +11,8 @@ read_data Al_alloy.lmpdat
 
 # defining potentials and other parameters
 
-pair_style	eam
-pair_coeff	* * Al_2020.pinn
+pair_style	eam/alloy
+pair_coeff	* * Al.eam Al
 
 # Delta t 
 timestep 0.0005 
@@ -21,11 +21,11 @@ neighbor	0.3 bin
 neigh_modify	delay 5
 
 # dumping configurations at timesteps
-dump mydump all custom 100000000 /dump_files/confdump.*.data id type x y z vx vy vz
+dump mydump all custom 2000000 confdump.*.data id type x y z vx vy vz
 dump_modify mydump sort id
 # set numerical integrator
 ## NVE; default is velocity Verlet
-fix nve1 all nve 
+fix 1 all nvt temp 300.0 300.0 $(100.0*dt)
+thermo 10000
 
-
-run 1000000000
+run 100000000

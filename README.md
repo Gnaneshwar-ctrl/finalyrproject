@@ -15,3 +15,4 @@ http://utkstair.org/clausius/docs/mse614/pdf/eam_intro_v01.pdf
 --> mpi cmd 
 mpirun -np 4 lmp_mpi -in 
 
+https://www.researchgate.net/publication/308789265_Constructing_EAM_potential_files_for_LAMMPS
