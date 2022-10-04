@@ -16,3 +16,10 @@ http://utkstair.org/clausius/docs/mse614/pdf/eam_intro_v01.pdf
 mpirun -np 4 lmp_mpi -in 
 
 https://www.researchgate.net/publication/308789265_Constructing_EAM_potential_files_for_LAMMPS
+
+
+
+https://wcnt.wisc.edu/wp-content/uploads/sites/882/2016/01/Nano_indentation.pdf
+
+
+
