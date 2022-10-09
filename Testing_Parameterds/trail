@@ -1,0 +1,43 @@
+# 3d metal relaxaction testing parameters
+
+#variable u loop 2 9
+#label myloop
+
+# initilizing EAM and boundry conditions
+
+units		metal
+boundary	p p p
+
+#loop
+variable u loop 1 1
+label myloop
+
+# reading data file containing the configuration
+
+read_data Al_alloy.lmpdat
+
+# defining potentials and other parameters
+
+pair_style	eam/alloy
+pair_coeff	* * Al.eam Al
+
+# Delta t 
+variable t equal 0.0005*$u
+timestep $t
+
+variable b equal 0.3*$u
+neighbor	$b bin
+neigh_modify	delay 5
+
+# dumping configurations at timesteps
+# dump mydump all custom 2000000 confdump.$u.*.data id type x y z vx vy vz
+# dump_modify mydump sort id
+# set numerical integrator
+## NVE; default is velocity Verlet
+fix 1 all nvt temp 300.0 300.0 $(100.0*dt)
+thermo 10000
+
+run 100000000
+
+next u
+jump SELF myloop
