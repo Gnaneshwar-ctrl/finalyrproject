@@ -13,7 +13,7 @@ read_data Al_alloy.lmpdat
 
 pair_style	eam/alloy
 pair_coeff	* * Al.eam Al
-
+ 
 # Delta t 
 timestep 0.0005 
 
