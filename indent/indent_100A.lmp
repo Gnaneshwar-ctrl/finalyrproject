@@ -1,0 +1,600 @@
+# 3d indenter simulation
+boundary	s s s
+units metal
+read_restart restart_100A.212
+
+# create geometry
+# make (111) the base plane
+#lattice 	fcc 4.04 orient z 1 1 1 orient x 1 1 -2 orient y -2 2 0 origin 0 0 0
+# define simulation domain
+#region		domain block 0 80.4 0 80.4 0 80.4 units box 
+# define substrate
+#region		substrate block 0 80.4 0 80.4 0 40.2 units box  
+# set simulation domain
+#create_box	1 domain
+# define region to be populated by quantum dot
+#region		dot sphere 40.2 40.2 40.2 35.2 units box 
+# create atoms in dot region
+#create_atoms	1 region dot
+# delete atoms in the substrate region
+#delete_atoms	region substrate
+
+
+# set nano-dot fixed atom region
+region	        base block INF INF INF INF INF 84.0 units box
+
+# EAM potentials
+pair_style	eam/alloy
+pair_coeff	* * Al.eam Al
+
+# define groups
+group		fixedatoms region base	
+
+# set force on fixed atoms to zero
+fix		3 fixedatoms setforce 0.0 0.0 0.0
+
+# Run with minimizer and set up output
+compute		CSP all centro/atom fcc
+compute eng all pe/atom
+thermo		0
+thermo_style	custom step f_3[3] pe
+thermo_modify norm no
+dump	 0dumpCSP all custom 20000 indent_100A.csp type x y z c_CSP c_eng
+
+
+
+
+
+
+
+
+# ---------- initial velocities ---------------------------
+#compute new inner temp
+#velocity inner create 10.00 4882748 temp new #fix 10 all nve
+#fix 4 all nvt temp 10.0 10.0 0.01 drag 1.0
+#fix 4 all temp/rescale 5 0.01 0.01 0.005 0.05
+
+### relaxaction
+
+#timestep 0.001
+#thermo 100 
+#thermo_modify temp new 
+#thermo_style custom step temp
+
+#run 50000
+
+
+### indentation 
+
+
+
+variable z equal "162.5-0.1*step*dt"
+fix 5 all indent 100.0 sphere 50.7 40.0 v_z 60 units box
+
+
+# ---------- Run with indenter ------------------------------------------
+#timestep 0.001
+#thermo 10
+#thermo_modify temp new thermo_style custom step temp f_5[3]
+#run 3000000
+
+
+
+
+
+
+
+
+# Begin indentation:
+# NOTE: 'fix_modify 2 energy yes' must be used to account for the energy added to system due to
+# the indenter. If 'no' then there will be no force or potential energy output from 'thermo' cmd
+
+#INDENT DISTANCE, 0.00
+fix 	2 all indent 10.0 sphere 80.00 80.00 228.00 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.10
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.90 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.20
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.80 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.30
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.70 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.40
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.60 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.50
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.50 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.60
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.40 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.70
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.30 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.80
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.20 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.90
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.10 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.00
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.00 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.10
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.90 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.20
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.80 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.30
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.70 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.40
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.60 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.50
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.50 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.60
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.40 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.70
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.30 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.80
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.20 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.90
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.10 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.00
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.00 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.10
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.90 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.20
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.80 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.30
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.70 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.40
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.60 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.50
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.50 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.60
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.40 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.70
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.30 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.80
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.20 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.90
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.10 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.00
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.00 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.10
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.90 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.20
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.80 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.30
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.70 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.40
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.60 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.50
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.50 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.60
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.40 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.70
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.30 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.80
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.20 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.90
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.10 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.00
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.00 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.10
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.90 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.20
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.80 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.30
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.70 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.40
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.60 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.50
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.50 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.60
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.40 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.70
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.30 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.80
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.20 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.90
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.10 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 5.00
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.00 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#Remove Indenter======================
+#INDENT DISTANCE, 4.90
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.10 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.80
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.20 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.70
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.30 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.60
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.40 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.50
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.50 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.40
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.60 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.30
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.70 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.20
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.80 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.10
+fix 	2 all indent 10.0 sphere 80.00 80.00 223.90 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 4.00
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.00 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.90
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.10 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.80
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.20 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.70
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.30 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.60
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.40 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.50
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.50 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.40
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.60 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.30
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.70 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.20
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.80 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.10
+fix 	2 all indent 10.0 sphere 80.00 80.00 224.90 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 3.00
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.00 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.90
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.10 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.80
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.20 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.70
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.30 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.60
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.40 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.50
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.50 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.40
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.60 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.30
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.70 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.20
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.80 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.10
+fix 	2 all indent 10.0 sphere 80.00 80.00 225.90 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 2.00
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.00 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.90
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.10 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.80
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.20 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.70
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.30 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.60
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.40 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.50
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.50 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.40
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.60 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.30
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.70 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.20
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.80 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.10
+fix 	2 all indent 10.0 sphere 80.00 80.00 226.90 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 1.00
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.00 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.90
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.10 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.80
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.20 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.70
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.30 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.60
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.40 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.50
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.50 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.40
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.60 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.30
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.70 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.20
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.80 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, 0.10
+fix 	2 all indent 10.0 sphere 80.00 80.00 227.90 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+#INDENT DISTANCE, -0.00
+fix 	2 all indent 10.0 sphere 80.00 80.00 228.00 100.0 units box 
+fix_modify	2 energy yes
+minimize	2.3e-16 1.0e-3 200000 200000
+
+
+
+

@@ -1,0 +1,48 @@
+# 3d indenter simulation of a 100A diameter hemispherical indentor
+dimension	3
+boundary	s s s
+units metal
+
+atom_style	atomic
+neigh_modify	delay 5
+
+# create geometry
+# make (111) the base plane
+lattice 	fcc 4.04 orient z 1 1 1 orient x 1 1 -2 orient y -2 2 0 origin 0 0 0
+
+# define simulation domain
+region		domain block 0 160.0 0 160.0 0 160.0 units box
+
+# define substrate
+region		substrate block 0 160.0 0 160.0 0.0 80.0 units box 
+
+# set simulation domain
+create_box	1 domain
+
+# define sphere that will become nano-dot
+region		dot sphere 80.0 80.0 80.0 50 units box 
+
+# create atoms in dot region
+create_atoms	1 region dot
+
+# delete atoms in the substrate region
+delete_atoms 	region substrate
+
+# EAM potentials
+pair_style	eam/alloy
+pair_coeff	* * Al.eam Al
+
+# Specify the creation of 'restart' files every 1000 steps (I have found this number to be
+# satisfactory, espically since for reasonable sized structures of <= 6x10^6 atoms we find a
+# minimum in <1000 iterations anyway.
+restart 1000 restart_100A
+
+# Perform minimization with:
+# energy_tol = 2.3e-16 ~ machine zero for sapphire
+# force_tol = 1.0e-5 ~ about as good as it gets for maximum component of force on any atom...
+#			assuming that you are using my modified "min_cg.cpp" file.
+# max_total_iteration = 20000 (see manual) I set as a number much larger than we need to prevent
+# 						early termination of minimizer.
+# max_force_iteration = 20000 (see manual) I set as a number much larger than we need to prevent
+#						early termination of minimizer.
+minimize	2.3e-16 1.0e-5 20000 20000
