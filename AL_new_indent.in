@@ -1,0 +1,141 @@
+ # ---------- Setup Variables --------------------- 
+
+variable etol equal 1.0e-25 
+variable ftol equal 1.0e-25 
+variable maxiter equal 5000 
+variable maxeval equal 10000 
+variable latparam equal 4.04 
+
+# ---------- Initialize Simulation --------------------- 
+
+clear 
+units metal 
+dimension 3 
+boundary p p p
+atom_style atomic 
+
+# ---------- Create Atomistic Structure --------------------- 
+
+lattice fcc ${latparam} 
+read_data Al_alloy.lmpdat
+replicate 2 2 2	
+
+#creating top and bottom partitions in order to trim the fat from the grains
+region		3 block INF INF INF INF 102  INF units box
+region		2 block INF INF INF INF INF  1.0 units box
+region		7 block INF INF INF INF INF  2.0 units box
+
+group		top    region 3
+group		bottom region 2
+group		base   region 7	
+group		inner subtract all bottom top
+
+
+#creating the step in the material
+#region          stepatoms block INF INF 0.01 INF 106 INF units box
+#group           step region stepatoms
+
+#delete_atoms group step
+delete_atoms group top
+delete_atoms group bottom
+
+# ---------- Define Interatomic Potential --------------------- 
+
+pair_style eam/alloy 
+pair_coeff * * Al.eam Al
+neighbor 0.3 bin 
+neigh_modify delay 10 check yes 
+  
+# ---------- Define Settings -------------------------------- 
+
+compute csym all centro/atom fcc
+compute eng all pe/atom 
+
+#this exports the data into the csp.all file
+dump		101 all custom 1000 csp.all id type x y z c_csym c_eng
+
+# ---------- Run Minimization ---------------------------- 
+
+reset_timestep 0 
+thermo 10 
+#thermo_style custom step pe lx ly lz press pxx pyy pzz
+min_style cg 
+minimize ${etol} ${ftol} ${maxiter} ${maxeval} 
+
+# ---------- totally fix all boundaries --------------------- 
+ 
+fix		7 base setforce 0.0 0.0 0.0
+
+# ---------- initial velocities --------------------------- 
+
+compute new inner temp
+velocity inner create 10.00 4882748 temp new
+#fix 10 all nve
+fix 4 all nvt temp 10.0 10.0 0.01 drag 1.0
+#fix 4 all temp/rescale 5 0.01 0.01 0.005 0.05
+
+# ---------- relaxation --------------------------------
+
+timestep        0.0005
+thermo		100
+thermo_modify	temp new
+thermo_style	custom step temp
+
+run 2000
+
+# ---------- indentation -------------------------------------------
+
+variable z equal "162.5-0.1"
+fix		5 all indent 100.0 sphere 80.0 80.0 v_z 70 units box
+
+# ---------- Run with indenter ------------------------------------------
+
+timestep        0.0005
+thermo		10
+thermo_modify	temp new
+thermo_style	custom step temp f_5[3]
+
+run 50000
+
+#min_style cg 
+#minimize ${etol} ${ftol} ${maxiter} ${maxeval}
+
+#thermo_modify	temp new
+#thermo_style	custom step temp f_5[3]
+
+#run 5000
+
+#min_style cg 
+#minimize ${etol} ${ftol} ${maxiter} ${maxeval}
+
+#thermo_modify	temp new
+#thermo_style	custom step temp f_5[3]
+
+#run 5000
+
+#min_style cg 
+#minimize ${etol} ${ftol} ${maxiter} ${maxeval}
+
+#thermo_modify	temp new
+#thermo_style	custom step temp f_5[3]
+
+#run 5000
+
+#min_style cg 
+#minimize ${etol} ${ftol} ${maxiter} ${maxeval}
+
+#thermo_modify	temp new
+#thermo_style	custom step temp f_5[3]
+
+#run 5000
+
+#min_style cg 
+#minimize ${etol} ${ftol} ${maxiter} ${maxeval}
+
+#thermo_modify	temp new
+#thermo_style	custom step temp f_5[3]
+
+#run 5000
+
+#min_style cg 
+#minimize ${etol} ${ftol} ${maxiter} ${maxeval}
